@@ -51,7 +51,7 @@ You can change the model used by configuring the environment variable `BEDROCK_M
 
 ### Setting up OpenLIT
 
-1. Follow the [OpenLIT installation guide](https://docs.openlit.io/latest/installation) to deploy OpenLIT
+1. Follow the [OpenLIT installation guide](https://docs.openlit.io/latest/openlit/installation) to deploy OpenLIT
 2. Once deployed, note your OpenLIT OTLP endpoint (typically `http://your-host:4318`)
 3. Set the environment variable:
 
@@ -59,15 +59,15 @@ You can change the model used by configuring the environment variable `BEDROCK_M
 export OTEL_ENDPOINT=http://your-openlit-host:4318
 ```
 
-> **Note**: OpenLIT is an open-source self-hosted solution and requires no authentication or API keys. Only the OTLP endpoint is needed.
+> **Note**: OpenLIT is an open-source self-hosted solution and requires no authentication or API keys by default to send telemetry but can be configured. Only the OTLP endpoint is needed.
 
 ### Optional Configuration
 
 You can customize the application name and environment:
 
 ```bash
-export OPENLIT_APP_NAME=my-bedrock-agent
-export OPENLIT_ENVIRONMENT=production
+export SERVICE_NAME=bedrock-agentcore-agent
+export DEPLOYMENT_ENVIRONMENT=production
 ```
 
 ### Run the app
@@ -91,82 +91,6 @@ You can interact with your agent with the following command:
 curl -X POST http://127.0.0.1:8080/invocations --data '{"prompt": "What is the weather now?"}'
 ```
 
-## Viewing Traces in OpenLIT
+![Dashboard](./openlit-dashboard.jpg)
 
-Once your agent is running and processing requests, you can view the observability data:
-
-1. Navigate to your OpenLIT dashboard at `http://your-openlit-host:3000`
-2. Click on "Traces" or "Metrics" to view telemetry data
-3. Filter by application name (default: `bedrock-agentcore-agent`)
-
-### What You'll See
-
-OpenLIT provides comprehensive observability including:
-- **Request Traces**: Full trace of agent invocations from request to response
-- **LLM Metrics**: Token usage, latency, and cost tracking for Bedrock model calls
-- **Tool Calls**: Detailed traces of tool executions (calculator, weather, etc.)
-- **Error Tracking**: Automatic capture of errors and exceptions
-- **Performance Analytics**: Request rates, p50/p95/p99 latencies, and throughput
-- **Cost Analysis**: Real-time cost tracking and optimization recommendations
-
-Now you have full observability of your Bedrock AgentCore Agents in OpenLIT!
-
-## Architecture
-
-```
-┌─────────────────┐
-│   Your Agent    │
-│  (Strands SDK)  │
-└────────┬────────┘
-         │
-         │ OpenTelemetry
-         │ (via OpenLIT SDK)
-         │
-         ▼
-┌─────────────────┐
-│    OpenLIT      │
-│  (Self-hosted)  │
-└─────────────────┘
-         │
-         ▼
-┌─────────────────┐
-│   Dashboard     │
-│ (Visualization) │
-└─────────────────┘
-```
-
-## Features
-
-- **Zero-code instrumentation**: OpenLIT automatically instruments Bedrock and LLM calls
-- **Open-source and self-hosted**: Full control over your observability data
-- **No authentication required**: Simple setup with just an OTLP endpoint
-- **Comprehensive metrics**: Tracks tokens, costs, latency, and errors
-- **Open standards**: Built on OpenTelemetry for vendor neutrality
-- **Real-time monitoring**: Live dashboards and alerting capabilities
-
-## Troubleshooting
-
-### Connection Issues
-
-If you're having trouble connecting to OpenLIT:
-
-1. Verify your OTEL endpoint is correct and accessible
-2. Check that OpenLIT is running
-3. Check firewall rules and network connectivity
-4. Ensure the OTLP port (typically 4318) is accessible
-
-### No Data Appearing
-
-If traces aren't showing up:
-
-1. Verify the OpenLIT SDK is initialized before importing the agent
-2. Check the console output for initialization messages
-3. Ensure environment variables are set correctly
-4. Verify your application name matches in the dashboard
-
-## Additional Resources
-
-- [OpenLIT Documentation](https://docs.openlit.io/)
-- [OpenLIT GitHub](https://github.com/openlit/openlit)
-- [Amazon Bedrock AgentCore Documentation](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html)
-- [Strands Agents Documentation](https://strandsagents.com/)
+![Tracing](./openlit-traces.png)
