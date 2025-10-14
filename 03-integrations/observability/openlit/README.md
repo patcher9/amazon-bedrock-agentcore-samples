@@ -6,7 +6,7 @@ This example contains a demo of a Personal Assistant Agent built on top of [Bedr
 ## Prerequisites
 
 - Python 3.11 or higher
-- OpenLIT (Cloud or Self-hosted)
+- self-hosted OpenLIT
 - AWS Account with appropriate permissions
 - Access to the following AWS services:
    - Amazon Bedrock
@@ -15,34 +15,21 @@ This example contains a demo of a Personal Assistant Agent built on top of [Bedr
 ## OpenLIT Instrumentation
 
 > [!TIP]
-> For detailed setup instructions, configuration options, and advanced use cases, please refer to the [OpenLIT Documentation](https://docs.openlit.io/).
+> For detailed setup instructions, configuration options, and advanced use cases, please refer to the [OpenLIT Documentation](https://docs.openlit.io/latest/openlit/quickstart-ai-observability).
 
 Bedrock AgentCore comes with [Observability](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/observability.html) support out-of-the-box.
-Hence, we just need to initialize the [OpenLIT SDK](https://github.com/openlit/openlit) to send the data to OpenLIT for comprehensive LLM observability.
+Hence, we just need to register an [OpenTelemetry SDK](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/overview.md#sdk) for complete LLM and Agent Observability with OpenLIT.
 
-We simplified this process, hiding all the complexity inside [openlit_config.py](./openlit_config.py).
+We simplified this process, hiding all the complexity inside [openlit_config.py](./openlit_config.py). 
+For sending data to OpenLIT, you can configure the OTEL_ENDPOINT env var with your OpenLIT URL for ingesting OTLP, for example: http://127.0.0.1:4318.
 
 ### Configuration Options
 
-#### Self-hosted OpenLIT
-
-For self-hosted OpenLIT instances, configure the `OTEL_ENDPOINT` environment variable with your OpenLIT OTLP endpoint:
+Configure the `OTEL_ENDPOINT` environment variable with your OpenLIT OTLP endpoint. **No authentication or OTLP headers are required** as OpenLIT is an open-source self-hosted solution:
 
 ```bash
 export OTEL_ENDPOINT=http://your-openlit-host:4318
 ```
-
-#### OpenLIT Cloud
-
-For OpenLIT Cloud, you need to configure both the endpoint and API key:
-
-```bash
-export OTEL_ENDPOINT=https://otlp.openlit.io
-export OPENLIT_API_KEY=your_api_key
-export OPENLIT_USE_CLOUD=true
-```
-
-The API key can also be read from the filesystem under `/etc/secrets/openlit_api_key` for secure deployments.
 
 
 ## How to use
@@ -64,9 +51,7 @@ You can change the model used by configuring the environment variable `BEDROCK_M
 
 ### Setting up OpenLIT
 
-#### Option 1: Self-hosted OpenLIT
-
-1. Follow the [OpenLIT self-hosting guide](https://docs.openlit.io/latest/installation) to deploy OpenLIT
+1. Follow the [OpenLIT installation guide](https://docs.openlit.io/latest/installation) to deploy OpenLIT
 2. Once deployed, note your OpenLIT OTLP endpoint (typically `http://your-host:4318`)
 3. Set the environment variable:
 
@@ -74,17 +59,7 @@ You can change the model used by configuring the environment variable `BEDROCK_M
 export OTEL_ENDPOINT=http://your-openlit-host:4318
 ```
 
-#### Option 2: OpenLIT Cloud
-
-1. Sign up for [OpenLIT Cloud](https://cloud.openlit.io)
-2. Create a new project and obtain your API key
-3. Set the environment variables:
-
-```bash
-export OPENLIT_API_KEY=your_api_key
-export OTEL_ENDPOINT=https://otlp.openlit.io
-export OPENLIT_USE_CLOUD=true
-```
+> **Note**: OpenLIT is an open-source self-hosted solution and requires no authentication or API keys. Only the OTLP endpoint is needed.
 
 ### Optional Configuration
 
@@ -120,15 +95,9 @@ curl -X POST http://127.0.0.1:8080/invocations --data '{"prompt": "What is the w
 
 Once your agent is running and processing requests, you can view the observability data:
 
-### Self-hosted OpenLIT
 1. Navigate to your OpenLIT dashboard at `http://your-openlit-host:3000`
 2. Click on "Traces" or "Metrics" to view telemetry data
 3. Filter by application name (default: `bedrock-agentcore-agent`)
-
-### OpenLIT Cloud
-1. Go to https://cloud.openlit.io
-2. Select your project
-3. Navigate to the "Traces" section
 
 ### What You'll See
 
@@ -156,7 +125,7 @@ Now you have full observability of your Bedrock AgentCore Agents in OpenLIT!
          ▼
 ┌─────────────────┐
 │    OpenLIT      │
-│  (Cloud/Self)   │
+│  (Self-hosted)  │
 └─────────────────┘
          │
          ▼
@@ -169,7 +138,8 @@ Now you have full observability of your Bedrock AgentCore Agents in OpenLIT!
 ## Features
 
 - **Zero-code instrumentation**: OpenLIT automatically instruments Bedrock and LLM calls
-- **Flexible deployment**: Works with both self-hosted and cloud deployments
+- **Open-source and self-hosted**: Full control over your observability data
+- **No authentication required**: Simple setup with just an OTLP endpoint
 - **Comprehensive metrics**: Tracks tokens, costs, latency, and errors
 - **Open standards**: Built on OpenTelemetry for vendor neutrality
 - **Real-time monitoring**: Live dashboards and alerting capabilities
@@ -181,9 +151,9 @@ Now you have full observability of your Bedrock AgentCore Agents in OpenLIT!
 If you're having trouble connecting to OpenLIT:
 
 1. Verify your OTEL endpoint is correct and accessible
-2. Check that OpenLIT is running (for self-hosted deployments)
-3. Ensure your API key is valid (for cloud deployments)
-4. Check firewall rules and network connectivity
+2. Check that OpenLIT is running
+3. Check firewall rules and network connectivity
+4. Ensure the OTLP port (typically 4318) is accessible
 
 ### No Data Appearing
 
