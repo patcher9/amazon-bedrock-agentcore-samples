@@ -40,3 +40,6 @@
 - greg-aws
 - Frank Dallezotte
 - patcher9
+- Omar Elkharbotly
+- Chintan Patel
+- Shreyas Subramanian
