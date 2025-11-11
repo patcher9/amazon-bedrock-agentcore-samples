@@ -1,6 +1,6 @@
 # Amazon Bedrock Agent Integration with OpenLIT
 
-This example contains a demo of a Personal Assistant Agent built on top of [Bedrock AgentCore Agents](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html) with OpenLIT observability.
+This example contains a demo of a Personal Assistant Agent built on top of [Bedrock AgentCore Agents](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html) with [OpenLIT](https://openlit.io) observability.
 
 
 ## Prerequisites
